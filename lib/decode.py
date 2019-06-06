@@ -41,23 +41,13 @@ def decode_dict(str, p):
     return data_dict
 
 def decode(str):
-    data = str[:46] + b'e'
-    data = bytes.decode(data)
-    str1 = str[46:68]
-    str2 = str1[:7]
-    str2 = bytes.decode(str2)
-    strs = str2.split(":")
-    a = int(strs[0])
-    if len(strs[1]) != a:
-        sys.exit()
-    str3 = str1[7:]
-    str4 = str3[:3]
-    str4 = bytes.decode(str4)
-    strq = str4.split(":")
-    b = int(strq[0])
-    str5 = str3[3:]
-    if b != len(str5):
-        sys.exit()
+    strs = str.split(b'5:peers')
+    str0 = strs[0] + b'e'
+    data = bytes.decode(str0)
+    strq  = strs[1].split(b":")
+    a = int(strq[0])
+    if a != len(strq[1])-1:
+        return False
     global p
     l = len(data)
     p = 0
@@ -87,4 +77,4 @@ def decode(str):
             return False
 
 # str = b'd8:completei3e10:incompletei0e8:intervali1800e5:peers12:\x9d\xe6\xf8\r\x1a\xe1\x98\x88N"\x1a\xe1e'
-# decode(str)
+# print(decode(str))
