@@ -11,6 +11,6 @@ def register(url,hash,i):
         Data = f.read()
 
 def get(url,hash,times):
-    r1 = range(6200,times+6200)
+    r1 = range(7200,times+7200)
     for i in r1:
         register(url,hash,i)
