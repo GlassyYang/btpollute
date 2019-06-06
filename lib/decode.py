@@ -66,30 +66,24 @@ def decode(str):
             data_dict = decode_dict(data, p)
             p = int(data_dict["p"])
             del data_dict["p"]
-            print("true")
             return True
         elif data[p] == "l":
-            print("类型： list")
             data_list = decode_list(data, p)
             p = int(data_list[-1])
             del data_list[-1]
             del data_list[-1]
-            print("true")
             return True
         elif data[p] == "i":
             f = data.index("e", p, l)
             data_int = data[p + 1:f]
             p = f + 1
-            print("true")
             return True
         elif data[p].isdigit():
             f = data.index(":", p, l)
             data_str = data[f + 1:int(data[p:f]) + f + 1]
             p = int(data[p:f]) + f + 1
-            print("true")
             return True
         else:
-            print("false")
             return False
 
 # str = b'd8:completei3e10:incompletei0e8:intervali1800e5:peers12:\x9d\xe6\xf8\r\x1a\xe1\x98\x88N"\x1a\xe1e'
