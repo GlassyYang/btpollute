@@ -37,7 +37,9 @@ def rollback(pkg):
         body = response[1]
         if len(head) == 0 and head[0] != b'HTTP/1.0 200 OK' and head[0] != b'HTTP/1.1 200 OK':
             return
-        print(body)
+        print(payload)
+        print(pkg.payload.src)
+        print(pkg.payload.dst)
         if not decode.decode(body):
             print(2)
             return
