@@ -41,40 +41,44 @@ def decode_dict(str, p):
     return data_dict
 
 def decode(str):
-    strs = str.split(b'5:peers')
-    str0 = strs[0] + b'e'
-    data = bytes.decode(str0)
-    strq  = strs[1].split(b":")
-    a = int(strq[0])
-    if a != len(strq[1])-1:
-        return False
-    global p
-    l = len(data)
-    p = 0
-    while p < l:
-        if data[p] == "d":
-            data_dict = decode_dict(data, p)
-            p = int(data_dict["p"])
-            del data_dict["p"]
-            return True
-        elif data[p] == "l":
-            data_list = decode_list(data, p)
-            p = int(data_list[-1])
-            del data_list[-1]
-            del data_list[-1]
-            return True
-        elif data[p] == "i":
-            f = data.index("e", p, l)
-            data_int = data[p + 1:f]
-            p = f + 1
-            return True
-        elif data[p].isdigit():
-            f = data.index(":", p, l)
-            data_str = data[f + 1:int(data[p:f]) + f + 1]
-            p = int(data[p:f]) + f + 1
-            return True
-        else:
+    try:
+        strs = str.split(b'5:peers')
+        str0 = strs[0] + b'e'
+        data = bytes.decode(str0)
+        strq  = strs[1].split(b":")
+        a = int(strq[0])
+        if a != len(strq[1])-1:
             return False
+        global p
+        l = len(data)
+        p = 0
+        while p < l:
+            if data[p] == "d":
+                data_dict = decode_dict(data, p)
+                p = int(data_dict["p"])
+                del data_dict["p"]
+                return True
+            elif data[p] == "l":
+                data_list = decode_list(data, p)
+                p = int(data_list[-1])
+                del data_list[-1]
+                del data_list[-1]
+                return True
+            elif data[p] == "i":
+                f = data.index("e", p, l)
+                data_int = data[p + 1:f]
+                p = f + 1
+                return True
+            elif data[p].isdigit():
+                f = data.index(":", p, l)
+                data_str = data[f + 1:int(data[p:f]) + f + 1]
+                p = int(data[p:f]) + f + 1
+                return True
+            else:
+                return False
+    except ValueError:
+        return False
 
-# str = b'd8:completei3e10:incompletei0e8:intervali1800e5:peers12:\x9d\xe6\xf8\r\x1a\xe1\x98\x88N"\x1a\xe1e'
-# print(decode(str))
+str = b'd8:completei3e10:incompletei0e8:intervali1800e5:peers12:\x9d\xe6\xf8\r\x1a\xe1\x98\x88N"\x1a\xe1e'
+# str = b'd8:completei14e10:incompletei0e8:intervali1800e5:peersld2:ip13:152.136.78.347:peer_id20:M4-0-3--cbe1c06b37c34:porti6882eed2:ip13:152.136.78.347:peer_id20:M4-0-3--6ea32d19e7734:porti6881eeee'
+print(decode(str))
