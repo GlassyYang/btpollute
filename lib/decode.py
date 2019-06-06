@@ -40,24 +40,23 @@ def decode_dict(str, p):
         i = i + 1
     return data_dict
 
-def decode(str1):
-    str2 = str1[92:136]
-    str3 = str1[:92]
-    str4 = str3 + b'65'
-    data = codecs.decode(str4, "hex_codec")
+def decode(str):
+    data = str[:46] + b'e'
     data = bytes.decode(data)
-    str5 = str2[:14]
-    str5 = codecs.decode(str5, "hex_codec")
-    str5 = bytes.decode(str5)
-    strs = str5.split(":")
-    if len(strs[1]) != 5:
+    str1 = str[46:68]
+    str2 = str1[:7]
+    str2 = bytes.decode(str2)
+    strs = str2.split(":")
+    a = int(strs[0])
+    if len(strs[1]) != a:
         sys.exit()
-    str6 = str2[14:]
-    str7 = str6[:4]
-    str7 = codecs.decode(str7, "hex_codec")
-    str7 = bytes.decode(str7)
-    a = int(str7)
-    if len(str6[6:]) != a*2:
+    str3 = str1[7:]
+    str4 = str3[:3]
+    str4 = bytes.decode(str4)
+    strq = str4.split(":")
+    b = int(strq[0])
+    str5 = str3[3:]
+    if b != len(str5):
         sys.exit()
     global p
     l = len(data)
@@ -67,31 +66,25 @@ def decode(str1):
             data_dict = decode_dict(data, p)
             p = int(data_dict["p"])
             del data_dict["p"]
-            print("true")
             return True
         elif data[p] == "l":
-            print("类型： list")
             data_list = decode_list(data, p)
             p = int(data_list[-1])
             del data_list[-1]
             del data_list[-1]
-            print("true")
             return True
         elif data[p] == "i":
             f = data.index("e", p, l)
             data_int = data[p + 1:f]
             p = f + 1
-            print("true")
             return True
         elif data[p].isdigit():
             f = data.index(":", p, l)
             data_str = data[f + 1:int(data[p:f]) + f + 1]
             p = int(data[p:f]) + f + 1
-            print("true")
             return True
         else:
-            print("false")
             return False
 
-# str1 = b"64383a636f6d706c65746569336531303a696e636f6d706c657465693065383a696e74657276616c693138303065353a706565727331323a9de6f80d1ae198884e221ae165"
-# decode(str1)
+# str = b'd8:completei3e10:incompletei0e8:intervali1800e5:peers12:\x9d\xe6\xf8\r\x1a\xe1\x98\x88N"\x1a\xe1e'
+# decode(str)
