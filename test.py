@@ -24,15 +24,16 @@ def rollback(pkg):
             session_dict[pkg.payload.dst] = pkg.payload.src
             info_hash_dict[pkg.payload.dst] = info_hash
     elif pkg.payload.src in session_dict.keys() and session_dict[pkg.payload.src] == pkg.payload.dst:
-        print(1)
-        response = payload.decode().split("\r\n\r\n")
+        response = payload.split(b"\r\n\r\n")
         if len(response) != 2:
             return
-        head = response[0].split('\r\n')
+        head = response[0].split(b'\r\n')
         body = response[1]
-        if len(head) == 0 and head[0] != 'HTTP/1.0 200 OK' and head[0] != 'HTTP/1.1 200 OK':
+        if len(head) == 0 and head[0] != b'HTTP/1.0 200 OK' and head[0] != b'HTTP/1.1 200 OK':
             return
-        if not decode(body):
+        print(body)
+        if not decode.decode(body):
+            print(2)
             return
         print("succeed catch a pkg src is %s and dest is %s" % (pkg.payload.src, pkg.payload.dst))
     return
