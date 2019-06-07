@@ -41,42 +41,6 @@ def decode_dict(str, p):
     return data_dict
 
 def decode(str):
-<<<<<<< HEAD
-
-    strs = str.split(b'5:peers')
-    str0 = strs[0] + b'e'
-    data = bytes.decode(str0)
-    strq  = strs[1].split(b":")
-    a = int(strq[0])
-    if a != len(strq[1])-1:
-        return False
-    global p
-    l = len(data)
-    p = 0
-    while p < l:
-        if data[p] == "d":
-            data_dict = decode_dict(data, p)
-            p = int(data_dict["p"])
-            del data_dict["p"]
-            return True
-        elif data[p] == "l":
-            data_list = decode_list(data, p)
-            p = int(data_list[-1])
-            del data_list[-1]
-            del data_list[-1]
-            return True
-        elif data[p] == "i":
-            f = data.index("e", p, l)
-            data_int = data[p + 1:f]
-            p = f + 1
-            return True
-        elif data[p].isdigit():
-            f = data.index(":", p, l)
-            data_str = data[f + 1:int(data[p:f]) + f + 1]
-            p = int(data[p:f]) + f + 1
-            return True
-        else:
-=======
     try:
         strs = str.split(b'5:peers')
         str0 = strs[0] + b'e'
@@ -84,7 +48,6 @@ def decode(str):
         strq  = strs[1].split(b":")
         a = int(strq[0])
         if a != len(strq[1])-1:
->>>>>>> 0c2b44dba635c5a484c5299b7c9e09034a5ece2a
             return False
         global p
         l = len(data)

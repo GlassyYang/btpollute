@@ -24,7 +24,6 @@ def rollback(pkg):
         return
     if payload[:3] == b"GET" and payload[-4:] == b"\r\n\r\n":
         info = isHttpRequest(payload)
-        print(info)
         if info:
             session_dict[pkg.payload.dst] = pkg.payload.src
             url_dict[pkg.payload.dst] = info[0]
@@ -47,7 +46,7 @@ def rollback(pkg):
         # 开始进行索引污染
         if pkg.payload.src not in info_hash_dict.keys() or pkg.payload.src not in url_dict.keys():
             raise EnvironmentError("系统错误")
-        register.get(url_dict[pkg.payload.src], info_hash_dict[pkg.payload.src], 10)
+        register.get(url_dict[pkg.payload.src], info_hash_dict[pkg.payload.src], 1000)
     return
 
 
