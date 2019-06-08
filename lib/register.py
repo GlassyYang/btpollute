@@ -10,9 +10,11 @@ def register(url,hash,i):
         Data = f.read()
 
 def get(url,hash,times):
+
     r1 = range(7200,times+7200)
     for i in r1:
         register(url,hash,i)
+
 
 if __name__ == "__main__":
     get('http://152.136.78.34:6969/announce', '%deY%935%b8K%d8%f9%d9%c9kE%b8%c8%d4%ca%dc%b6%2f%90', 100, '157027')
