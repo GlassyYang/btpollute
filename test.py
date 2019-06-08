@@ -9,9 +9,8 @@ session_dict = {}
 info_hash_dict = {}
 # 存储tracker服务器对应的url
 url_dict = {}
-
 def pcap_and_analyze():
-    pkgs = sniff(iface="wlan0", filter="tcp", count=100, prn=rollback)
+    pkgs = sniff(iface="lo", filter="tcp", count=100, prn=rollback)
     # for pkg in pkgs:
     #     rollback(pkg)
     return
@@ -46,7 +45,7 @@ def rollback(pkg):
         # 开始进行索引污染
         if pkg.payload.src not in info_hash_dict.keys() or pkg.payload.src not in url_dict.keys():
             raise EnvironmentError("系统错误")
-        register.get(url_dict[pkg.payload.src], info_hash_dict[pkg.payload.src], 1000)
+        register.get(url_dict[pkg.payload.src], info_hash_dict[pkg.payload.src], 1)
     return
 
 
@@ -78,6 +77,8 @@ def isHttpRequest(payload):
     if "peer_id" not in param.keys():
         return False
     if "port" not in param.keys():
+        return False
+    if "downloaded" not in param.keys():
         return False
     return  "http://" + host + url, info_hash
 
