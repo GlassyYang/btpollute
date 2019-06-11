@@ -3,7 +3,9 @@
 from socket import *
 from threading import Thread
 from threading import Lock
-
+from random import sample
+import string
+from urllib import urlencode, urlopen
 
 class PortMonitor(Thread):
     def __init__(self, socket, port, peerManager):
@@ -30,14 +32,13 @@ class IndexServer(Thread):
 
     def run(self):
         client = self.client
-        while True:
-            data = client.recv(1024)
-            if data == b'END' or len(data) < 22:
-                break
-            port = (data[0] << 8) + data[1]
-            peer_id = data[2:]
-            self.peerManager.add(port, peer_id)
-            client.send(b'OK')
+        data = client.recv(1024)
+        url, hash, times = data.split(' ')
+        times = int(times)
+        for i in range(7200, 7200 + times):
+            ran_str = ''.join(sample(string.ascii_letters + string.digits, 20))
+            self.peerManager.add(i, ran_str)
+            register(url, hash, i, ran_str)
         client.send(b'OK')
         client.close()
 
@@ -55,8 +56,8 @@ class PeerIdManager:
     
     def get(self, port):
         self.lock.acquire()
-        peer_id = peer_id[port]
-        self.lock.realease()
+        peer_id = self.peer_id[port]
+        self.lock.release()
         return peer_id
 
 
@@ -85,6 +86,11 @@ def openport():
         print("Server connected from %s:%s", addr)
         serverThread = IndexServer(client, manager)
         serverThread.start()
+
+def register(url,hash,i,ran_str):
+    print('register: port is: %d' % i)
+    urlq = url + "?info_hash="+ hash + "&peer_id="+ran_str+"&ip=152.136.78.34&port="+str(i)+"&upload=0&downloaded=0&left=0&event=started&numwant=200&compact=1&no_peer_id=1&supportcrypto=1&redundant=0"
+    urlopen(urlq)
 
 if __name__ == "__main__":
     openport()

