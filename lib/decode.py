@@ -78,7 +78,9 @@ def decode(str):
                 return False
     except ValueError:
         return False
+    except IndexError:
+        return False
 
-str = b'd8:completei3e10:incompletei0e8:intervali1800e5:peers12:\x9d\xe6\xf8\r\x1a\xe1\x98\x88N"\x1a\xe1e'
+# str = b'd8:completei3e10:incompletei0e8:intervali1800e5:peers12:\x9d\xe6\xf8\r\x1a\xe1\x98\x88N"\x1a\xe1e'
 # str = b'd8:completei14e10:incompletei0e8:intervali1800e5:peersld2:ip13:152.136.78.347:peer_id20:M4-0-3--cbe1c06b37c34:porti6882eed2:ip13:152.136.78.347:peer_id20:M4-0-3--6ea32d19e7734:porti6881eeee'
-print(decode(str))
+# print(decode(str))
